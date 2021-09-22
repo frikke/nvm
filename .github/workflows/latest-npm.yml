@@ -4,10 +4,13 @@ on: [pull_request, push]
 
 jobs:
   nodes:
+    permissions:
+      contents: read
     name: 'nvm install-latest-npm'
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         node-version:
           - "11"
@@ -34,15 +37,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: ljharb/actions/node/run@main
+      - uses: ljharb/actions/node/install@main
         name: 'nvm install-latest-npm'
         with:
           node-version: ${{ matrix.node-version }}
           skip-ls-check: true
           skip-install: true
-          shell-command: 'npm --version'
+      - run: npm --version
 
   node:
+    permissions:
+      contents: none
     name: 'nvm install-latest-npm'
     needs: [nodes]
     runs-on: ubuntu-latest
